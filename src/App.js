@@ -1,5 +1,7 @@
 import { Component } from "react";
 import { v4 as uuidv4 } from "uuid";
+import toast, { Toaster } from "react-hot-toast";
+
 import Form from "./components/Form";
 import ContactList from "./components/ContactList";
 import Filter from "./components/Filter";
@@ -17,22 +19,35 @@ class App extends Component {
   };
 
   addContact = ({ name, number }) => {
+    const { contacts } = this.state;
+    // const notify = () => toast(`${name} is already in contacts`);
+
+    if (
+      contacts.find(
+        (contact) => contact.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      toast(`${name} is already in contacts`);
+      return;
+    }
+
     const contact = {
       id: uuidv4(),
       name,
       number,
     };
 
-    this.setState(({ contacts /*prevState.contacts*/ }) => ({
+    this.setState(({ contacts }) => ({
       contacts: [contact, ...contacts],
     }));
+    /*{ contacts } - prevState.contacts*/
   };
 
   changeFilter = (e) => {
     this.setState({ filter: e.currentTarget.value });
   };
 
-  getvisibleContacts = () => {
+  getVisibleContacts = () => {
     const { contacts, filter } = this.state;
     const normalizedFilter = filter.toLowerCase();
 
@@ -43,16 +58,16 @@ class App extends Component {
 
   render() {
     const { filter } = this.state;
-    const visibleContacts = this.getvisibleContacts();
+    const visibleContacts = this.getVisibleContacts();
 
     return (
       <div className={s.div}>
         <h1>Phonebook</h1>
         <Form onFormSubmit={this.addContact} />
-
-        <Filter value={filter} onChange={this.changeFilter} />
+        <Toaster />
 
         <h1>Contacts</h1>
+        <Filter value={filter} onChange={this.changeFilter} />
         <ContactList contacts={visibleContacts} />
       </div>
     );
