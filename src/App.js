@@ -20,14 +20,15 @@ class App extends Component {
 
   addContact = ({ name, number }) => {
     const { contacts } = this.state;
-    // const notify = () => toast(`${name} is already in contacts`);
 
     if (
       contacts.find(
         (contact) => contact.name.toLowerCase() === name.toLowerCase()
       )
     ) {
-      toast(`${name} is already in contacts`);
+      toast(`${name} is already in contacts`, {
+        duration: 1500,
+      });
       return;
     }
 
@@ -56,6 +57,17 @@ class App extends Component {
     );
   };
 
+  onDeleteBtn = (e) => {
+    const id = e.target.id;
+    const newContacts = this.state.contacts.filter(
+      (contact) => contact.id !== id
+    );
+    this.setState({
+      contacts: newContacts,
+      filter: "",
+    });
+  };
+
   render() {
     const { filter } = this.state;
     const visibleContacts = this.getVisibleContacts();
@@ -63,12 +75,18 @@ class App extends Component {
     return (
       <div className={s.div}>
         <h1>Phonebook</h1>
+
         <Form onFormSubmit={this.addContact} />
         <Toaster />
 
         <h1>Contacts</h1>
+
         <Filter value={filter} onChange={this.changeFilter} />
-        <ContactList contacts={visibleContacts} />
+
+        <ContactList
+          contacts={visibleContacts}
+          onDeleteBtn={this.onDeleteBtn}
+        />
       </div>
     );
   }
