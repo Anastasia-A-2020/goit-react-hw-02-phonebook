@@ -27,7 +27,7 @@ class App extends Component {
       )
     ) {
       toast(`${name} is already in contacts`, {
-        duration: 1500,
+        duration: 3000,
       });
       return;
     }
