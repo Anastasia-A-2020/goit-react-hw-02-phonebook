@@ -1,7 +1,8 @@
 import { Component } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Form from "./components/Form";
-import ContactList from "./components/ContactList.js";
+import ContactList from "./components/ContactList";
+import Filter from "./components/Filter";
 import s from "./App.css";
 
 class App extends Component {
@@ -12,6 +13,7 @@ class App extends Component {
       { id: "id-3", name: "Eden Clements", number: "645-17-79" },
       { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
     ],
+    filter: "",
   };
 
   addContact = ({ name, number }) => {
@@ -21,21 +23,37 @@ class App extends Component {
       number,
     };
 
-    this.setState((prevState) => ({
-      contacts: [contact, ...prevState.contacts],
+    this.setState(({ contacts /*prevState.contacts*/ }) => ({
+      contacts: [contact, ...contacts],
     }));
   };
 
+  changeFilter = (e) => {
+    this.setState({ filter: e.currentTarget.value });
+  };
+
+  getvisibleContacts = () => {
+    const { contacts, filter } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+
+    return contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
+
   render() {
-    const { contacts } = this.state;
-    console.log(contacts);
+    const { filter } = this.state;
+    const visibleContacts = this.getvisibleContacts();
+
     return (
       <div className={s.div}>
         <h1>Phonebook</h1>
         <Form onFormSubmit={this.addContact} />
 
+        <Filter value={filter} onChange={this.changeFilter} />
+
         <h1>Contacts</h1>
-        <ContactList contacts={contacts} />
+        <ContactList contacts={visibleContacts} />
       </div>
     );
   }

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import s from "./Form.module.css";
 
 const INITIAL_STATE = {
@@ -68,3 +69,8 @@ export default class Form extends Component {
     );
   }
 }
+
+Form.propType = {
+  name: PropTypes.string.isRequired,
+  number: PropTypes.string.isRequired,
+};
